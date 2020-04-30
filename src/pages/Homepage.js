@@ -1,7 +1,7 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import Bookshelf from "./../components/Bookshelf";
 import Navbar from "./../components/Navbar";
-import { withRouter } from "react-router-dom";
 import "./Homepage.css";
 
 class Homepage extends Component {
@@ -41,7 +41,7 @@ class Homepage extends Component {
         <div className="open-search">
           <button
             onClick={() => {
-              history.replace("/search");
+              history.push("/search");
             }}
           >
             Add a book

@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
-import "./Searchpage.css";
-import { search } from "../BooksAPI";
 import Book from "./../components/Book";
+import { search } from "../utils/BooksAPI";
 import { mapToViewModel } from "./../utils/bookUtils";
+import "./Searchpage.css";
 
 class Searchpage extends Component {
   state = {
@@ -14,10 +14,14 @@ class Searchpage extends Component {
   handleSearchChange = async (event) => {
     const query = event.currentTarget.value;
     this.setState({ searchQuery: query }, async () => {
-      const result = await search(this.state.searchQuery);
+      try {
+        const result = await search(this.state.searchQuery);
 
-      const books = result.map((book) => mapToViewModel(book, "none"));
-      this.setState({ books });
+        const books = result.map((book) => mapToViewModel(book, "none"));
+        this.setState({ books });
+      } catch (ex) {
+        console.log("Error occured while searching", ex);
+      }
     });
   };
 
@@ -28,7 +32,7 @@ class Searchpage extends Component {
     return (
       <div className="search-books">
         <div className="search-books-bar">
-          <button className="close-search" onClick={() => history.replace("/")}>
+          <button className="close-search" onClick={() => history.goBack()}>
             Close
           </button>
           <div className="search-books-input-wrapper">

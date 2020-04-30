@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
-import { getAll, update } from "./BooksAPI";
 import Homepage from "./pages/Homepage";
 import Searchpage from "./pages/Searchpage";
 import { mapToViewModel } from "./utils/bookUtils";
+import { getAll, update } from "./utils/BooksAPI";
 import "./App.css";
 
 class App extends Component {
@@ -12,24 +12,33 @@ class App extends Component {
   };
 
   async componentDidMount() {
-    const result = await getAll();
-    const books = result.map((book) => mapToViewModel(book));
-    this.setState({ books });
+    try {
+      const result = await getAll();
+      const books = result.map((book) => mapToViewModel(book));
+      this.setState({ books });
+    } catch (ex) {
+      console.log("Error occured while fetching all books", ex);
+    }
   }
 
   handleShelfSelect = async (book, newShelf) => {
     const id = book.id;
-    await update(book, newShelf);
 
-    let { books } = { ...this.state };
-    if (newShelf === "none") {
-      books = books.filter((book) => book.id !== id);
-    } else {
-      const currentBook = books.find((book) => book.id === id);
-      currentBook.shelf = newShelf;
+    try {
+      await update(book, newShelf);
+
+      let { books } = { ...this.state };
+      if (newShelf === "none") {
+        books = books.filter((book) => book.id !== id);
+      } else {
+        const currentBook = books.find((book) => book.id === id);
+        currentBook.shelf = newShelf;
+      }
+
+      this.setState({ books });
+    } catch (ex) {
+      console.log("Error occured while updating the book", ex);
     }
-
-    this.setState({ books });
   };
 
   handleBookAdd = (book, shelf) => {
