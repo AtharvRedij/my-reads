@@ -3,6 +3,7 @@ import { withRouter } from "react-router-dom";
 import "./Searchpage.css";
 import { search } from "../BooksAPI";
 import Book from "./../components/Book";
+import { mapToViewModel } from "./../utils/bookUtils";
 
 class Searchpage extends Component {
   state = {
@@ -14,7 +15,9 @@ class Searchpage extends Component {
     const query = event.currentTarget.value;
     this.setState({ searchQuery: query }, async () => {
       const result = await search(this.state.searchQuery);
-      this.setState({ books: result });
+
+      const books = result.map((book) => mapToViewModel(book, "none"));
+      this.setState({ books });
     });
   };
 

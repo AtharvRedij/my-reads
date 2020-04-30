@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { getAll, update } from "./BooksAPI";
 import Homepage from "./pages/Homepage";
-import "./App.css";
 import Searchpage from "./pages/Searchpage";
+import { mapToViewModel } from "./utils/bookUtils";
+import "./App.css";
 
 class App extends Component {
   state = {
@@ -12,29 +13,9 @@ class App extends Component {
 
   async componentDidMount() {
     const result = await getAll();
-    const books = result.map((book) => this.mapToViewModel(book));
+    const books = result.map((book) => mapToViewModel(book));
     this.setState({ books });
   }
-
-  mapToViewModel = (book) => {
-    return {
-      id: book.id,
-      title: book.title,
-      author: book.authors[0],
-      imageUrl: book.imageLinks.thumbnail,
-      shelf: book.shelf,
-    };
-  };
-
-  mapToViewModelWithShelf = (book, shelf) => {
-    return {
-      id: book.id,
-      title: book.title,
-      author: book.authors[0],
-      imageUrl: book.imageLinks.thumbnail,
-      shelf,
-    };
-  };
 
   handleShelfSelect = async (book, newShelf) => {
     const id = book.id;
@@ -53,9 +34,8 @@ class App extends Component {
 
   handleBookAdd = (book, shelf) => {
     if (shelf === "none") return;
-    console.log(book, shelf);
     const { books } = { ...this.state };
-    books.push(this.mapToViewModelWithShelf(book, shelf));
+    books.push({ ...book, shelf });
     this.setState({ books });
   };
 

@@ -13,6 +13,7 @@ const Book = ({ book, onShelfSelect }) => {
             width: 128,
             height: 193,
             backgroundImage: `url(${imageUrl})`,
+            backgroundRepeat: "no-repeat",
           }}
         ></div>
         <div className="book-shelf-changer">
