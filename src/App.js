@@ -26,6 +26,16 @@ class App extends Component {
     };
   };
 
+  mapToViewModelWithShelf = (book, shelf) => {
+    return {
+      id: book.id,
+      title: book.title,
+      author: book.authors[0],
+      imageUrl: book.imageLinks.thumbnail,
+      shelf,
+    };
+  };
+
   handleShelfSelect = async (book, newShelf) => {
     const id = book.id;
     await update(book, newShelf);
@@ -41,10 +51,22 @@ class App extends Component {
     this.setState({ books });
   };
 
+  handleBookAdd = (book, shelf) => {
+    if (shelf === "none") return;
+    console.log(book, shelf);
+    const { books } = { ...this.state };
+    books.push(this.mapToViewModelWithShelf(book, shelf));
+    this.setState({ books });
+  };
+
   render() {
     return (
       <Switch>
-        <Route path="/search" exact component={Searchpage} />
+        <Route
+          path="/search"
+          exact
+          render={() => <Searchpage onBookAdd={this.handleBookAdd} />}
+        />
         <Route
           path="/"
           exact

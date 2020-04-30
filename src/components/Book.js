@@ -3,6 +3,7 @@ import "./Book.css";
 
 const Book = ({ book, onShelfSelect }) => {
   const { title, author, imageUrl, shelf } = book;
+
   return (
     <div className="book">
       <div className="book-top">
