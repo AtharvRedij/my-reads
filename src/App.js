@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import "./App.css";
-import Navbar from "./components/Navbar";
-import Bookshelf from "./components/Bookshelf";
+import { Route, Switch, Redirect } from "react-router-dom";
 import { getAll, update } from "./BooksAPI";
+import Homepage from "./pages/Homepage";
+import "./App.css";
+import Searchpage from "./pages/Searchpage";
 
 class App extends Component {
   state = {
@@ -27,7 +28,7 @@ class App extends Component {
 
   handleShelfSelect = async (book, newShelf) => {
     const id = book.id;
-    const result = await update(book, newShelf);
+    await update(book, newShelf);
 
     let { books } = { ...this.state };
     if (newShelf === "none") {
@@ -41,37 +42,22 @@ class App extends Component {
   };
 
   render() {
-    const { books } = this.state;
-
-    const currentlyReadingBooks = books.filter(
-      (book) => book.shelf === "currentlyReading"
-    );
-    const wantToReadBooks = books.filter((book) => book.shelf === "wantToRead");
-    const readBooks = books.filter((book) => book.shelf === "read");
-
     return (
-      <div className="list-books">
-        <Navbar />
-        <div className="list-books-content">
-          <div>
-            <Bookshelf
-              title={"Currently Reading"}
-              books={currentlyReadingBooks}
+      <Switch>
+        <Route path="/search" exact component={Searchpage} />
+        <Route
+          path="/"
+          exact
+          render={() => (
+            <Homepage
+              books={this.state.books}
               onShelfSelect={this.handleShelfSelect}
             />
-            <Bookshelf
-              title={"Want To Read"}
-              books={wantToReadBooks}
-              onShelfSelect={this.handleShelfSelect}
-            />
-            <Bookshelf
-              title={"Read"}
-              books={readBooks}
-              onShelfSelect={this.handleShelfSelect}
-            />
-          </div>
-        </div>
-      </div>
+          )}
+        />
+
+        <Redirect to="/" />
+      </Switch>
     );
   }
 }
