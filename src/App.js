@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./App.css";
 import Navbar from "./components/Navbar";
 import Bookshelf from "./components/Bookshelf";
-import { getAll } from "./BooksAPI";
+import { getAll, update } from "./BooksAPI";
 
 class App extends Component {
   state = {
@@ -25,6 +25,21 @@ class App extends Component {
     };
   };
 
+  handleShelfSelect = async (book, newShelf) => {
+    const id = book.id;
+    const result = await update(book, newShelf);
+
+    let { books } = { ...this.state };
+    if (newShelf === "none") {
+      books = books.filter((book) => book.id !== id);
+    } else {
+      const currentBook = books.find((book) => book.id === id);
+      currentBook.shelf = newShelf;
+    }
+
+    this.setState({ books });
+  };
+
   render() {
     const { books } = this.state;
 
@@ -42,9 +57,18 @@ class App extends Component {
             <Bookshelf
               title={"Currently Reading"}
               books={currentlyReadingBooks}
+              onShelfSelect={this.handleShelfSelect}
             />
-            <Bookshelf title={"Want To Read"} books={wantToReadBooks} />
-            <Bookshelf title={"Read"} books={readBooks} />
+            <Bookshelf
+              title={"Want To Read"}
+              books={wantToReadBooks}
+              onShelfSelect={this.handleShelfSelect}
+            />
+            <Bookshelf
+              title={"Read"}
+              books={readBooks}
+              onShelfSelect={this.handleShelfSelect}
+            />
           </div>
         </div>
       </div>

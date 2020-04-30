@@ -1,8 +1,8 @@
 import React from "react";
 import "./Book.css";
 
-const Book = ({ book }) => {
-  const { id, title, author, imageUrl, shelf } = book;
+const Book = ({ book, onShelfSelect }) => {
+  const { title, author, imageUrl, shelf } = book;
   return (
     <div className="book">
       <div className="book-top">
@@ -15,7 +15,12 @@ const Book = ({ book }) => {
           }}
         ></div>
         <div className="book-shelf-changer">
-          <select>
+          <select
+            value={shelf}
+            onChange={(event) => {
+              onShelfSelect(book, event.currentTarget.value);
+            }}
+          >
             <option value="move" disabled>
               Move to...
             </option>

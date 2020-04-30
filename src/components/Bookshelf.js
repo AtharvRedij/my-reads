@@ -2,7 +2,7 @@ import React from "react";
 import "./Bookshelf.css";
 import Book from "./Book";
 
-const Bookshelf = ({ title, books }) => {
+const Bookshelf = ({ title, books, onShelfSelect }) => {
   return (
     <div className="bookshelf">
       <h2 className="bookshelf-title">{title}</h2>
@@ -11,7 +11,7 @@ const Bookshelf = ({ title, books }) => {
           {books.map((book) => {
             return (
               <li key={book.id}>
-                <Book book={book} />
+                <Book book={book} onShelfSelect={onShelfSelect} />
               </li>
             );
           })}
